@@ -1,4 +1,5 @@
 import express, { type Request, type Response, type Application } from 'express';
+import cors from 'cors';
 import { sql } from 'drizzle-orm';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './docs/swagger-output.json' with { type: 'json' };
@@ -12,12 +13,14 @@ import { likeRouter } from './routes/likeRouter.ts';
 import { flagRouter } from './routes/flagRouter.ts';
 import { auditLogRouter } from './routes/auditLogRouter.ts';
 import { errorHandler, notFound } from './middlewares/errorHandler.ts';
+import { cors } from './middlewares/cors.ts';
 
 const app: Application = express();
-const PORT: number = 3000;
+const PORT: number = Number(process.env.PORT ?? 3000);
 
+// CORS dipasang paling awal agar frontend React (origin berbeda) bisa memanggil API.
+app.use(cors);
 app.use(express.json());
-
 // Dokumentasi API (Swagger UI) dari spec hasil generate swagger-autogen.
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

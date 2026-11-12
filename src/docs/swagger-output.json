@@ -14,9 +14,21 @@
     "/health": {
       "get": {
         "description": "",
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "204": {
+            "description": "No Content"
           },
           "500": {
             "description": "Internal Server Error"
@@ -27,9 +39,21 @@
     "/api/v1/auth/register": {
       "post": {
         "description": "",
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Akun dibuat (role customer)"
+          },
+          "204": {
+            "description": "No Content"
           },
           "400": {
             "description": "Validasi gagal"
@@ -72,9 +96,21 @@
     "/api/v1/auth/login": {
       "post": {
         "description": "",
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Login berhasil, mengembalikan token JWT"
+          },
+          "204": {
+            "description": "No Content"
           },
           "401": {
             "description": "Email atau password salah"
@@ -111,6 +147,13 @@
         "description": "",
         "parameters": [
           {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "authorization",
             "in": "header",
             "schema": {
@@ -121,6 +164,9 @@
         "responses": {
           "200": {
             "description": "Data user yang sedang login"
+          },
+          "204": {
+            "description": "No Content"
           },
           "401": {
             "description": "Token tidak ada / tidak valid"
@@ -140,6 +186,13 @@
         ],
         "description": "",
         "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "role",
             "in": "query",
@@ -166,6 +219,9 @@
         "responses": {
           "200": {
             "description": "Daftar user"
+          },
+          "204": {
+            "description": "No Content"
           }
         }
       },
@@ -174,9 +230,21 @@
           "Users"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "User dibuat"
+          },
+          "204": {
+            "description": "No Content"
           },
           "409": {
             "description": "Email sudah terdaftar"
@@ -214,11 +282,21 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Detail user"
+          },
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Tidak ditemukan"
@@ -230,6 +308,13 @@
       "get": {
         "description": "",
         "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "search",
             "in": "query",
@@ -263,6 +348,9 @@
           "200": {
             "description": "Daftar warung"
           },
+          "204": {
+            "description": "No Content"
+          },
           "400": {
             "description": "Validasi gagal"
           }
@@ -271,6 +359,13 @@
       "post": {
         "description": "",
         "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "authorization",
             "in": "header",
@@ -282,6 +377,9 @@
         "responses": {
           "201": {
             "description": "Warung dibuat"
+          },
+          "204": {
+            "description": "No Content"
           },
           "400": {
             "description": "Validasi gagal"
@@ -321,11 +419,21 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Detail warung"
+          },
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Tidak ditemukan"
@@ -344,6 +452,13 @@
             }
           },
           {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "authorization",
             "in": "header",
             "schema": {
@@ -354,6 +469,9 @@
         "responses": {
           "200": {
             "description": "Warung ter-update"
+          },
+          "204": {
+            "description": "No Content"
           },
           "401": {
             "description": "Token tidak ada / tidak valid"
@@ -393,6 +511,13 @@
             }
           },
           {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "authorization",
             "in": "header",
             "schema": {
@@ -403,6 +528,9 @@
         "responses": {
           "200": {
             "description": "Warung terhapus"
+          },
+          "204": {
+            "description": "No Content"
           },
           "401": {
             "description": "Token tidak ada / tidak valid"
@@ -432,11 +560,21 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Daftar menu"
+          },
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Tidak ditemukan"
@@ -457,6 +595,13 @@
             }
           },
           {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "authorization",
             "in": "header",
             "schema": {
@@ -467,6 +612,9 @@
         "responses": {
           "201": {
             "description": "Review dibuat"
+          },
+          "204": {
+            "description": "No Content"
           },
           "400": {
             "description": "Validasi gagal"
@@ -516,6 +664,13 @@
         "description": "",
         "parameters": [
           {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "stallId",
             "in": "query",
             "schema": {
@@ -554,6 +709,9 @@
         "responses": {
           "200": {
             "description": "Daftar menu beserta data warung (JOIN)"
+          },
+          "204": {
+            "description": "No Content"
           }
         }
       },
@@ -562,9 +720,21 @@
           "Menu Items"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Menu dibuat"
+          },
+          "204": {
+            "description": "No Content"
           }
         },
         "requestBody": {
@@ -599,11 +769,21 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Detail menu beserta data warung (JOIN)"
+          },
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Tidak ditemukan"
@@ -623,11 +803,21 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Menu ter-update"
+          },
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Tidak ditemukan"
@@ -662,11 +852,21 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Menu terhapus"
+          },
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Tidak ditemukan"
@@ -681,6 +881,13 @@
         ],
         "description": "",
         "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "stallId",
             "in": "query",
@@ -713,6 +920,9 @@
         "responses": {
           "200": {
             "description": "Daftar review beserta data user (JOIN)"
+          },
+          "204": {
+            "description": "No Content"
           }
         }
       },
@@ -721,9 +931,21 @@
           "Reviews"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Review dibuat"
+          },
+          "204": {
+            "description": "No Content"
           }
         },
         "requestBody": {
@@ -758,11 +980,21 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Detail review beserta data user (JOIN)"
+          },
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Tidak ditemukan"
@@ -782,11 +1014,21 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Review terhapus"
+          },
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Tidak ditemukan"
@@ -800,9 +1042,21 @@
           "Likes"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Like dibuat"
+          },
+          "204": {
+            "description": "No Content"
           },
           "409": {
             "description": "User sudah menyukai review ini"
@@ -838,11 +1092,21 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Like terhapus"
+          },
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Tidak ditemukan"
@@ -857,6 +1121,13 @@
         ],
         "description": "",
         "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "status",
             "in": "query",
@@ -882,6 +1153,9 @@
         "responses": {
           "200": {
             "description": "Daftar laporan review beserta pelapor dan review (JOIN)"
+          },
+          "204": {
+            "description": "No Content"
           }
         }
       }
@@ -900,11 +1174,21 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Detail laporan"
+          },
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Tidak ditemukan"
@@ -924,11 +1208,21 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Status laporan ter-update"
+          },
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Tidak ditemukan"
@@ -956,6 +1250,13 @@
         ],
         "description": "",
         "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "userId",
             "in": "query",
@@ -995,6 +1296,9 @@
         "responses": {
           "200": {
             "description": "Daftar audit log beserta data user (JOIN)"
+          },
+          "204": {
+            "description": "No Content"
           }
         }
       },
@@ -1003,9 +1307,21 @@
           "Audit Logs"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Audit log dibuat"
+          },
+          "204": {
+            "description": "No Content"
           }
         },
         "requestBody": {
@@ -1043,11 +1359,21 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Detail audit log"
+          },
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Tidak ditemukan"
