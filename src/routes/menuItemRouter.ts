@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { MenuItemController } from '../controllers/menuItemController.ts';
+import { authenticate, authorize } from '../middlewares/auth.ts';
 
 const menuItemRouter = Router();
 const menuItemController = new MenuItemController();
@@ -23,7 +24,8 @@ menuItemRouter.get('/:id', (req, res) => {
   return menuItemController.getMenuItemById(req, res);
 });
 
-menuItemRouter.post('/', (req, res) => {
+// Mutasi menu butuh login (audit memakai userId dari token): owner (warung sendiri) & admin.
+menuItemRouter.post('/', authenticate, authorize('owner', 'admin'), (req, res) => {
   // #swagger.tags = ['Menu Items']
   /* #swagger.requestBody = {
        required: true,
@@ -39,7 +41,7 @@ menuItemRouter.post('/', (req, res) => {
   return menuItemController.createMenuItem(req, res);
 });
 
-menuItemRouter.put('/:id', (req, res) => {
+menuItemRouter.put('/:id', authenticate, authorize('owner', 'admin'), (req, res) => {
   // #swagger.tags = ['Menu Items']
   // #swagger.parameters['id'] = { in: 'path', required: true, type: 'integer' }
   /* #swagger.requestBody = {
@@ -57,7 +59,7 @@ menuItemRouter.put('/:id', (req, res) => {
   return menuItemController.updateMenuItem(req, res);
 });
 
-menuItemRouter.delete('/:id', (req, res) => {
+menuItemRouter.delete('/:id', authenticate, authorize('owner', 'admin'), (req, res) => {
   // #swagger.tags = ['Menu Items']
   // #swagger.parameters['id'] = { in: 'path', required: true, type: 'integer' }
   // #swagger.responses[200] = { description: 'Menu terhapus' }

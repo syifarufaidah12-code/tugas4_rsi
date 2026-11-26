@@ -35,3 +35,9 @@ export function getDb() {
   }
   return dbPromise;
 }
+
+// Tipe executor: instance db biasa atau transaksi (db.transaction).
+// Repository menerima salah satunya agar mutasi + audit bisa berjalan di transaksi yang sama.
+export type Db = Awaited<ReturnType<typeof getDb>>;
+export type DbTransaction = Parameters<Parameters<Db['transaction']>[0]>[0];
+export type DbExecutor = Db | DbTransaction;

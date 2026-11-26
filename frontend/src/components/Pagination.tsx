@@ -3,9 +3,11 @@ interface Props {
   limit: number;
   total: number;
   onChange: (page: number) => void;
+  /** Kata benda pada teks info, mis. "warung" atau "catatan". */
+  itemLabel?: string;
 }
 
-export function Pagination({ page, limit, total, onChange }: Props) {
+export function Pagination({ page, limit, total, onChange, itemLabel = 'warung' }: Props) {
   const totalPages = Math.max(1, Math.ceil(total / limit));
   if (total === 0) return null;
 
@@ -19,7 +21,7 @@ export function Pagination({ page, limit, total, onChange }: Props) {
   return (
     <div className="pagination">
       <span className="pagination-info">
-        Menampilkan {from}–{to} dari {total} warung
+        Menampilkan {from}–{to} dari {total} {itemLabel}
       </span>
       <div className="pagination-buttons">
         <button className="btn btn-ghost btn-sm" disabled={page <= 1} onClick={() => onChange(page - 1)}>

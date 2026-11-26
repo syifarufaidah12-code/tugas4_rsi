@@ -25,6 +25,11 @@ export const authApi = {
     return res.data.data;
   },
 
+  /** POST /auth/logout -> backend mencatat audit LOGOUT (token tetap dihapus di client). */
+  async logout(): Promise<void> {
+    await api.post('/auth/logout');
+  },
+
   /** GET /auth/me -> data user pemilik token. */
   async me(): Promise<User> {
     const res = await api.get<ApiSuccess<{ user: User }>>('/auth/me');

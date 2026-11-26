@@ -1,42 +1,41 @@
 import { Router } from 'express';
 import { AuditLogController } from '../controllers/auditLogController.ts';
+import { authenticate, authorize } from '../middlewares/auth.ts';
+import { validate } from '../middlewares/validate.ts';
+import { auditLogIdParamsSchema, listAuditLogsQuerySchema } from '../schemas/auditLogSchema.ts';
 
 const auditLogRouter = Router();
 const auditLogController = new AuditLogController();
 
-auditLogRouter.get('/', (req, res) => {
+// Seluruh endpoint audit: wajib login (401) dan hanya admin (403).
+// Tidak ada POST/PUT/DELETE: audit hanya ditulis oleh backend dan bersifat append-only.
+auditLogRouter.use(authenticate, authorize('admin'));
+
+auditLogRouter.get('/', validate(listAuditLogsQuerySchema, 'query'), (req, res) => {
   // #swagger.tags = ['Audit Logs']
-  // #swagger.parameters['userId']      = { in: 'query', type: 'integer' }
+  // #swagger.security = [{ "bearerAuth": [] }]
+  // #swagger.parameters['page']        = { in: 'query', type: 'integer' }
+  // #swagger.parameters['pageSize']    = { in: 'query', type: 'integer' }
   // #swagger.parameters['action']      = { in: 'query', type: 'string' }
   // #swagger.parameters['targetTable'] = { in: 'query', type: 'string' }
-  // #swagger.parameters['page']        = { in: 'query', type: 'integer' }
-  // #swagger.parameters['limit']       = { in: 'query', type: 'integer' }
-  // #swagger.responses[200] = { description: 'Daftar audit log beserta data user (JOIN)' }
+  // #swagger.parameters['targetId']    = { in: 'query', type: 'integer' }
+  // #swagger.parameters['userId']      = { in: 'query', type: 'integer' }
+  // #swagger.parameters['from']        = { in: 'query', type: 'string', description: 'YYYY-MM-DD' }
+  // #swagger.parameters['to']          = { in: 'query', type: 'string', description: 'YYYY-MM-DD' }
+  // #swagger.responses[200] = { description: 'Daftar audit log { items, pagination }' }
+  // #swagger.responses[400] = { description: 'Validasi query gagal' }
+  // #swagger.responses[401] = { description: 'Token tidak ada / tidak valid' }
+  // #swagger.responses[403] = { description: 'Bukan admin' }
   return auditLogController.getAuditLogs(req, res);
 });
 
-auditLogRouter.get('/:id', (req, res) => {
+auditLogRouter.get('/:id', validate(auditLogIdParamsSchema, 'params'), (req, res) => {
   // #swagger.tags = ['Audit Logs']
+  // #swagger.security = [{ "bearerAuth": [] }]
   // #swagger.parameters['id'] = { in: 'path', required: true, type: 'integer' }
-  // #swagger.responses[200] = { description: 'Detail audit log' }
+  // #swagger.responses[200] = { description: 'Detail satu audit log' }
   // #swagger.responses[404] = { description: 'Tidak ditemukan' }
   return auditLogController.getAuditLogById(req, res);
-});
-
-auditLogRouter.post('/', (req, res) => {
-  // #swagger.tags = ['Audit Logs']
-  /* #swagger.requestBody = {
-       required: true,
-       content: {
-         'application/json': {
-           schema: { type: 'object' },
-           example: { userId: 1, action: 'UPDATE', targetTable: 'STALLS', targetId: 1, metadata: { note: 'ubah nama warung' } }
-         }
-       }
-     }
-  */
-  // #swagger.responses[201] = { description: 'Audit log dibuat' }
-  return auditLogController.createAuditLog(req, res);
 });
 
 export { auditLogRouter };

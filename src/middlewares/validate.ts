@@ -14,10 +14,12 @@ export function validate(schema: ZodTypeAny, source: RequestSource): RequestHand
     const result = schema.safeParse(req[source]);
 
     if (!result.success) {
-      const errors: ErrorDetail[] = result.error.issues.map((issue) => ({
-        field: issue.path.join('.') || source,
-        message: issue.message,
-      }));
+      const errors: ErrorDetail[] = result.error.issues.flatMap((issue) =>
+        // Schema .strict(): satu error per parameter yang tidak dikenal.
+        issue.code === 'unrecognized_keys'
+          ? issue.keys.map((key) => ({ field: key, message: `Parameter ${key} tidak dikenal` }))
+          : [{ field: issue.path.join('.') || source, message: issue.message }],
+      );
       return next(new ValidationError(errors));
     }
 

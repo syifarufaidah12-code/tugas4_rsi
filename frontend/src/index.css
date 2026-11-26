@@ -899,3 +899,166 @@ code {
     font-size: 1.6rem;
   }
 }
+
+/* ---------- Audit log (Tugas 5) ---------- */
+.audit-filters {
+  padding: 1rem 1.1rem;
+}
+.audit-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 0 0.9rem;
+}
+.audit-filter-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
+}
+.audit-filter-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+.audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.audit-table th,
+.audit-table td {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.audit-table th {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  background: var(--surface-2);
+}
+.audit-table tbody tr:hover {
+  background: #fcfaf7;
+}
+.audit-table tr:last-child td {
+  border-bottom: 0;
+}
+.mono {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem;
+}
+.nowrap {
+  white-space: nowrap;
+}
+.break {
+  word-break: break-word;
+}
+.action-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.18rem 0.5rem;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.action-auth {
+  background: var(--info-soft);
+  color: var(--info);
+}
+.action-create {
+  background: var(--success-soft);
+  color: var(--success);
+}
+.action-update {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+.action-delete {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.action-other {
+  background: var(--surface-2);
+  color: var(--muted);
+}
+.result-chip {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+.result-success {
+  background: var(--success-soft);
+  color: var(--success);
+}
+.result-failed {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.audit-pagination {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.audit-pagination .pagination {
+  flex: 1;
+}
+.page-size {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+.page-size select {
+  font: inherit;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #fff;
+}
+.modal-wide {
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.modal-head h3 {
+  margin: 0;
+}
+.modal-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--muted);
+  padding: 1.5rem 0;
+}
+.modal-subtitle {
+  margin: 1.1rem 0 0.5rem;
+  font-size: 0.95rem;
+}
+.audit-detail-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.audit-detail-grid .span-2 {
+  grid-column: span 2;
+}
+.json-view {
+  background: #2a2420;
+  color: #f7efe6;
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1rem;
+  font-size: 0.82rem;
+  overflow-x: auto;
+  margin: 0 0 1rem;
+}
