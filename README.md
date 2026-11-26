@@ -1,4 +1,4 @@
-# Sistem Review Kantin — Tugas 4 (Frontend React & Integrasi Backend)
+# Sistem Review Kantin — Tugas 4 & 5 (Frontend React, Integrasi Backend, Audit Log)
 
 Aplikasi review warung kantin kampus yang terdiri dari:
 
@@ -109,3 +109,53 @@ frontend/src/
 ├── utils/        # permissions.ts (aturan role)
 └── types.ts      # tipe data sesuai respons backend
 ```
+
+---
+
+## 5. Tugas 5 — Validasi, Error Handling & Audit Log
+
+### Ringkasan
+| Fitur | Implementasi |
+|---|---|
+| Audit LOGIN / LOGOUT | `POST /api/v1/auth/login` dan `POST /api/v1/auth/logout` mencatat `role`, `ip_address`, `user_agent`, `result` (`success`/`failed`). `target_id` = id user. Best-effort: gagal menulis audit tidak menggagalkan login/logout. |
+| Endpoint audit (admin) | `GET /api/audit-logs` dan `GET /api/audit-logs/:id` (juga tersedia di `/api/v1/audit-logs`). Tanpa token → 401, owner/customer → 403, id tidak ada → 404. |
+| Filter & pagination | `page`, `pageSize`, `action`, `targetTable`, `targetId`, `userId`, `from`, `to` (validasi Zod, parameter asing ditolak 400, pagination di database, urut `created_at DESC, id DESC`). |
+| Audit mutasi menu (dalam transaksi) | `CREATE_MENU`, `UPDATE_MENU`, `DELETE_MENU`. Mutasi + audit ditulis dalam satu `db.transaction`; jika audit gagal, mutasi ikut dibatalkan. |
+| Append-only di database | `DB/05-audit-logs-tugas5.sql`: trigger `TR_AUDIT_LOGS_AppendOnly` (INSTEAD OF UPDATE, DELETE) + `DENY UPDATE, DELETE` untuk user aplikasi (hanya INSERT dan SELECT). |
+| Frontend | Menu **Audit Log** (admin): filter, pagination, dan modal detail yang memanggil `GET /audit-logs/:id` (metadata, ip_address, user_agent). Logout memanggil `POST /auth/logout`. |
+
+Mutasi menu (`POST/PUT/DELETE /api/v1/menu-items`) sekarang membutuhkan login owner (warung sendiri) atau admin, karena audit mengambil `userId` dari token.
+Sistem Review Kantin tidak memiliki tabel ORDERS, sehingga audit baseline yang berlaku adalah audit menu.
+
+### Alur request sampai audit tersimpan
+1. Client mengirim request (mis. `POST /api/v1/auth/logout` dengan header `Authorization: Bearer <token>`).
+2. Middleware `authenticate` memverifikasi JWT dan mengisi `userId` + `role` dari token.
+3. Controller mengambil `ip_address` (`req.ip`) dan `user_agent` (header `User-Agent`) lewat `getClientInfo(req)`.
+4. Service menulis audit:
+   - LOGIN/LOGOUT → `AuditLogService.recordBestEffort()` (error hanya dicatat di console).
+   - Mutasi data → `db.transaction(tx => { mutasi; auditLogService.record(..., tx) })`.
+5. Repository menjalankan `INSERT INTO AUDIT_LOGS` dengan parameterized query (Drizzle).
+6. Saat dibaca, `userName` dan `userEmail` diambil dari tabel USERS melalui JOIN.
+
+### Contoh response `GET /api/audit-logs`
+```json
+{
+  "status": "success",
+  "data": {
+    "items": [
+      {
+        "id": 5, "userId": 1, "userName": "Admin Kantin", "userEmail": "admin@kantin.test",
+        "action": "LOGOUT", "targetTable": "USERS", "targetId": 1,
+        "metadata": { "role": "admin", "result": "success", "ip_address": "::1", "user_agent": "Mozilla/5.0" },
+        "createdAt": "2026-11-25T10:21:23.000Z"
+      }
+    ],
+    "pagination": { "page": 1, "pageSize": 20, "total": 1, "totalPages": 1 }
+  }
+}
+```
+
+### Pengujian cepat
+- `bash scripts/uji-tugas5.sh` (butuh backend berjalan dan Git Bash/WSL) menjalankan skenario login/logout, 401/403, detail/404, filter, dan validasi.
+- Uji audit gagal saat logout: jalankan `DENY INSERT ON dbo.AUDIT_LOGS TO syifa;` lalu logout → tetap `200` dengan `"audited": false`. Kembalikan dengan `REVOKE INSERT ON dbo.AUDIT_LOGS TO syifa; GRANT INSERT ON dbo.AUDIT_LOGS TO syifa;`.
+- Uji append-only: jalankan `DB/06-uji-append-only.sql` di SSMS → error 50010 (trigger) dan 229 (permission denied).

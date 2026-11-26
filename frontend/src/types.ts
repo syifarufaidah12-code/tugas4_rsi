@@ -66,3 +66,35 @@ export interface LoginResult {
   expiresIn: string;
   user: User;
 }
+
+// ---------- Audit log (Tugas 5) ----------
+export interface AuditLog {
+  id: number;
+  userId: number;
+  userName: string | null;
+  userEmail: string | null;
+  action: string;
+  targetTable: string;
+  targetId: number;
+  /** Berisi role, result, ip_address, user_agent (LOGIN/LOGOUT) atau detail perubahan data. */
+  metadata: Record<string, unknown> | null;
+  createdAt: string;
+}
+
+export interface AuditPagination {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface AuditLogQuery {
+  page?: number;
+  pageSize?: number;
+  action?: string;
+  targetTable?: string;
+  targetId?: number;
+  userId?: number;
+  from?: string;
+  to?: string;
+}

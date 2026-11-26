@@ -3,6 +3,7 @@ import { AuthService } from '../services/authService.ts';
 import { getValidated } from '../middlewares/validate.ts';
 import { getUser } from '../middlewares/auth.ts';
 import { sendError } from '../utils/http.ts';
+import { getClientInfo } from '../utils/requestContext.ts';
 import type { LoginBody, RegisterBody } from '../schemas/authSchema.ts';
 
 export class AuthController {
@@ -22,11 +23,25 @@ export class AuthController {
     }
   };
 
-  login = async (_req: Request, res: Response): Promise<Response> => {
+  login = async (req: Request, res: Response): Promise<Response> => {
     try {
       const body = getValidated<LoginBody>(res, 'body');
-      const data = await this.authService.login(body);
+      const data = await this.authService.login(body, getClientInfo(req));
       return res.status(200).json({ status: 'success', data });
+    } catch (error) {
+      return sendError(res, error);
+    }
+  };
+
+  logout = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const result = await this.authService.logout(getUser(res), getClientInfo(req));
+      return res.status(200).json({
+        status: 'success',
+        message: 'Logout berhasil. Hapus token di sisi client.',
+        // Hanya informasi; logout tetap sukses walau audit gagal.
+        data: { audited: result.audited },
+      });
     } catch (error) {
       return sendError(res, error);
     }

@@ -6,8 +6,8 @@ export function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/login', { state: { flash: 'Anda berhasil logout.' } });
   };
 
@@ -28,6 +28,7 @@ export function Navbar() {
             Warung
           </NavLink>
           {canCreateStall(user) && <NavLink to="/stalls/new">+ Tambah Warung</NavLink>}
+          {user?.role === 'admin' && <NavLink to="/audit-logs">Audit Log</NavLink>}
         </nav>
 
         <div className="nav-user">

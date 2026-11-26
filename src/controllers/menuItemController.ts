@@ -9,6 +9,7 @@ import {
   queryString,
   sendError,
 } from '../utils/http.ts';
+import { getUser } from '../middlewares/auth.ts';
 
 export class MenuItemController {
   private menuItemService: MenuItemService;
@@ -44,7 +45,7 @@ export class MenuItemController {
 
   createMenuItem = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const item = await this.menuItemService.createMenuItem(parseCreateMenuItem(req.body));
+      const item = await this.menuItemService.createMenuItem(parseCreateMenuItem(req.body), getUser(res));
       return res.status(201).json({ status: 'success', data: item });
     } catch (error) {
       return sendError(res, error);
@@ -54,7 +55,7 @@ export class MenuItemController {
   updateMenuItem = async (req: Request, res: Response): Promise<Response> => {
     try {
       const id = parseId(req.params.id, 'ID menu');
-      const item = await this.menuItemService.updateMenuItem(id, parseUpdateMenuItem(req.body));
+      const item = await this.menuItemService.updateMenuItem(id, parseUpdateMenuItem(req.body), getUser(res));
       return res.status(200).json({ status: 'success', data: item });
     } catch (error) {
       return sendError(res, error);
@@ -63,7 +64,7 @@ export class MenuItemController {
 
   deleteMenuItem = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const item = await this.menuItemService.deleteMenuItem(parseId(req.params.id, 'ID menu'));
+      const item = await this.menuItemService.deleteMenuItem(parseId(req.params.id, 'ID menu'), getUser(res));
       return res.status(200).json({ status: 'success', data: item });
     } catch (error) {
       return sendError(res, error);

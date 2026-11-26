@@ -1,43 +1,31 @@
-import { AppError } from '../utils/http.ts';
-import { asBody, reqInt, reqString } from '../utils/validate.ts';
-
-export interface CreateAuditLogInput {
+/** Data yang ditulis backend ke AUDIT_LOGS. Tidak pernah berasal dari body request. */
+export interface AuditRecord {
   userId: number;
+  /** Konvensi <ACTION>_<ENTITY>, mis. CREATE_MENU, UPDATE_MENU; autentikasi: LOGIN, LOGOUT. */
   action: string;
   targetTable: string;
   targetId: number;
-  metadata: string | null;
+  metadata?: Record<string, unknown> | null;
+  ipAddress?: string | null;
+  userAgent?: string | null;
 }
 
-// Hasil JOIN AUDIT_LOGS + USERS.
-export interface AuditLogDetailDto {
+/** Bentuk satu item audit pada respons daftar dan detail. */
+export interface AuditLogDto {
   id: number;
+  userId: number;
+  userName: string | null;
+  userEmail: string | null;
   action: string;
   targetTable: string;
   targetId: number;
-  metadata: string | null;
+  metadata: Record<string, unknown> | null;
   createdAt: Date | string | null;
-  user: {
-    id: number;
-    name: string;
-  };
 }
 
-export function parseCreateAuditLog(raw: unknown): CreateAuditLogInput {
-  const body = asBody(raw);
-
-  // metadata boleh berupa object JSON atau string; disimpan sebagai teks.
-  let metadata: string | null = null;
-  if (body.metadata !== undefined && body.metadata !== null) {
-    metadata = typeof body.metadata === 'string' ? body.metadata : JSON.stringify(body.metadata);
-    if (metadata.length > 4000) throw new AppError(400, 'Field metadata maksimal 4000 karakter');
-  }
-
-  return {
-    userId: reqInt(body, 'userId'),
-    action: reqString(body, 'action', 50),
-    targetTable: reqString(body, 'targetTable', 50),
-    targetId: reqInt(body, 'targetId'),
-    metadata,
-  };
+export interface Pagination {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
 }

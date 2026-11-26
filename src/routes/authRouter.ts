@@ -53,6 +53,13 @@ authRouter.post('/login', validate(loginBodySchema, 'body'), (req, res) => {
   return authController.login(req, res);
 });
 
+authRouter.post('/logout', authenticate, (req, res) => {
+  // #swagger.security = [{ "bearerAuth": [] }]
+  // #swagger.responses[200] = { description: 'Logout berhasil, audit LOGOUT dicatat (best-effort)' }
+  // #swagger.responses[401] = { description: 'Token tidak ada / tidak valid' }
+  return authController.logout(req, res);
+});
+
 authRouter.get('/me', authenticate, (req, res) => {
   // #swagger.security = [{ "bearerAuth": [] }]
   // #swagger.responses[200] = { description: 'Data user yang sedang login' }

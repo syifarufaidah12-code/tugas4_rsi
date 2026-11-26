@@ -142,6 +142,43 @@
         }
       }
     },
+    "/api/v1/auth/logout": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logout berhasil, audit LOGOUT dicatat (best-effort)"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Token tidak ada / tidak valid"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/api/v1/auth/me": {
       "get": {
         "description": "",
@@ -727,6 +764,13 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -810,6 +854,13 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -855,6 +906,13 @@
           },
           {
             "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
             "in": "header",
             "schema": {
               "type": "string"
@@ -1258,7 +1316,21 @@
             }
           },
           {
-            "name": "userId",
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "pageSize",
             "in": "query",
             "schema": {
               "type": "integer"
@@ -1279,70 +1351,58 @@
             }
           },
           {
-            "name": "page",
+            "name": "targetId",
             "in": "query",
             "schema": {
               "type": "integer"
             }
           },
           {
-            "name": "limit",
+            "name": "userId",
             "in": "query",
             "schema": {
               "type": "integer"
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Daftar audit log beserta data user (JOIN)"
           },
-          "204": {
-            "description": "No Content"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Audit Logs"
-        ],
-        "description": "",
-        "parameters": [
           {
-            "name": "origin",
-            "in": "header",
+            "name": "from",
+            "in": "query",
+            "description": "YYYY-MM-DD",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "YYYY-MM-DD",
             "schema": {
               "type": "string"
             }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Audit log dibuat"
+          "200": {
+            "description": "Daftar audit log { items, pagination }"
           },
           "204": {
             "description": "No Content"
+          },
+          "400": {
+            "description": "Validasi query gagal"
+          },
+          "401": {
+            "description": "Token tidak ada / tidak valid"
+          },
+          "403": {
+            "description": "Bukan admin"
           }
         },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              },
-              "example": {
-                "userId": 1,
-                "action": "UPDATE",
-                "targetTable": "STALLS",
-                "targetId": 1,
-                "metadata": {
-                  "note": "ubah nama warung"
-                }
-              }
-            }
+        "security": [
+          {
+            "bearerAuth": []
           }
-        }
+        ]
       }
     },
     "/api/v1/audit-logs/{id}": {
@@ -1366,11 +1426,18 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Detail audit log"
+            "description": "Detail satu audit log"
           },
           "204": {
             "description": "No Content"
@@ -1378,7 +1445,164 @@
           "404": {
             "description": "Tidak ditemukan"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/audit-logs/": {
+      "get": {
+        "tags": [
+          "Audit Logs"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "action",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "targetTable",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "targetId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "YYYY-MM-DD",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "YYYY-MM-DD",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Daftar audit log { items, pagination }"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Validasi query gagal"
+          },
+          "401": {
+            "description": "Token tidak ada / tidak valid"
+          },
+          "403": {
+            "description": "Bukan admin"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/audit-logs/{id}": {
+      "get": {
+        "tags": [
+          "Audit Logs"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail satu audit log"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     }
   },

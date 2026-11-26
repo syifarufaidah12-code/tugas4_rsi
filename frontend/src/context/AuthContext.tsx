@@ -13,7 +13,7 @@ interface AuthContextValue {
   sessionMessage: string | null;
   login: (payload: LoginPayload) => Promise<User>;
   register: (payload: RegisterPayload) => Promise<User>;
-  logout: () => void;
+  logout: () => Promise<void>;
   refreshMe: () => Promise<User | null>;
   clearSessionMessage: () => void;
 }
@@ -25,8 +25,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [initializing, setInitializing] = useState<boolean>(() => Boolean(tokenStorage.get()));
   const [sessionMessage, setSessionMessage] = useState<string | null>(null);
 
-  // Logout: backend memakai JWT stateless, jadi sesi diakhiri dengan menghapus token di client.
-  const logout = useCallback(() => {
+  // Logout: POST /auth/logout agar backend mencatat audit LOGOUT, lalu token dihapus di client.
+  // Kegagalan request logout tidak menghalangi logout di sisi client.
+  const logout = useCallback(async () => {
+    try {
+      if (tokenStorage.get()) await authApi.logout();
+    } catch {
+      /* abaikan: sesi tetap diakhiri */
+    }
     tokenStorage.clear();
     setUser(null);
   }, []);

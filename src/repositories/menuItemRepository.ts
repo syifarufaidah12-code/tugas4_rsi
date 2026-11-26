@@ -1,5 +1,5 @@
 import { and, count, eq, like, type SQL } from 'drizzle-orm';
-import { getDb } from '../db/index.ts';
+import { getDb, type DbExecutor } from '../db/index.ts';
 import { menuItems, stalls } from '../db/schema.ts';
 import type { CreateMenuItemInput, UpdateMenuItemInput } from '../dtos/menuItemDto.ts';
 
@@ -49,8 +49,8 @@ export class MenuItemRepository {
     return { rows, total: Number(totals[0]?.total ?? 0) };
   }
 
-  async findById(id: number) {
-    const db = await getDb();
+  async findById(id: number, executor?: DbExecutor) {
+    const db = executor ?? (await getDb());
     const rows = await db
       .select(menuWithStall)
       .from(menuItems)
@@ -65,8 +65,8 @@ export class MenuItemRepository {
     return db.select().from(menuItems).where(eq(menuItems.stallId, stallId)).orderBy(menuItems.id);
   }
 
-  async create(input: CreateMenuItemInput) {
-    const db = await getDb();
+  async create(input: CreateMenuItemInput, executor?: DbExecutor) {
+    const db = executor ?? (await getDb());
     const rows = await db
       .insert(menuItems)
       .output()
@@ -79,8 +79,8 @@ export class MenuItemRepository {
     return rows[0];
   }
 
-  async update(id: number, input: UpdateMenuItemInput) {
-    const db = await getDb();
+  async update(id: number, input: UpdateMenuItemInput, executor?: DbExecutor) {
+    const db = executor ?? (await getDb());
     const rows = await db
       .update(menuItems)
       .set({
@@ -94,8 +94,8 @@ export class MenuItemRepository {
     return rows[0];
   }
 
-  async remove(id: number) {
-    const db = await getDb();
+  async remove(id: number, executor?: DbExecutor) {
+    const db = executor ?? (await getDb());
     const rows = await db.delete(menuItems).where(eq(menuItems.id, id)).output();
     return rows[0];
   }

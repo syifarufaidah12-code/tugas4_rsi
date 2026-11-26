@@ -10,6 +10,7 @@ import { StallEditPage } from './pages/StallEditPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { AuditLogPage } from './pages/AuditLogPage';
 import { API_BASE_URL } from './api/client';
 
 export default function App() {
@@ -31,6 +32,16 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Admin saja */}
+            <Route
+              path="/audit-logs"
+              element={
+                <ProtectedRoute roles={['admin']}>
+                  <AuditLogPage />
                 </ProtectedRoute>
               }
             />
